@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find Best Records — תקליטים לחובבי חיפוש באוצרות</title>
+<meta name="description" content="תקליטי ויניל בדירוג ידני, מינימום VG+. Find Best Records היא חנות תקליטים במהדורות מוגבלות לאספנים שאכפת להם ממצב התקליט שמונח על הפטיפון.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;400;500;600;700&family=Heebo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  /* ============================================
+     DESIGN TOKENS
+     Shared with shop.html — keep these two files
+     in sync if you ever change the brand palette.
+  ============================================ */
+  :root{
+    --black:#15130f;
+    --black-soft:#1c1a15;
+    --cream:#ede6d6;
+    --paper:#f4efe4;
+    --amber:#c9501f;
+    --amber-soft:#dd7a4a;
+    --olive:#6e7456;
+    --text:#f2eee3;
+    --text-dim:#a89e8a;
+    --line: rgba(242,238,227,0.14);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth; overflow-x:hidden;}
+  body{
+    background:var(--black);
+    color:var(--text);
+    font-family:'Heebo', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+  a{color:inherit; text-decoration:none;}
+  .display{font-family:'Frank Ruhl Libre', serif;}
+  .mono{font-family:'Heebo', sans-serif; letter-spacing:0.03em;}
+  .wrap{max-width:1240px; margin:0 auto; padding:0 32px;}
+
+  a:focus-visible, button:focus-visible, input:focus-visible{
+    outline:2px solid var(--amber-soft);
+    outline-offset:3px;
+  }
+
+  /* ---------- header ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(21,19,15,0.88);
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:20px 32px;
+  }
+  .logo{
+    font-family:'Frank Ruhl Libre', serif;
+    font-weight:600;
+    font-size:1.08rem;
+    letter-spacing:0.01em;
+    white-space:nowrap;
+    display:flex; align-items:center; gap:10px;
+  }
+  .logo .dot{
+    width:11px; height:11px; border-radius:50%;
+    background:var(--amber);
+    box-shadow:0 0 0 3px rgba(201,80,31,0.18);
+  }
+  .navlinks{
+    display:flex; gap:36px; font-size:0.92rem; color:var(--text-dim);
+    letter-spacing:0.02em;
+  }
+  .navlinks a{ transition:color .2s; }
+  .navlinks a:hover{ color:var(--text); }
+  @media (max-width:760px){ .navlinks{display:none;} }
+
+  .shop-btn{
+    font-family:'Heebo', sans-serif;
+    font-size:0.82rem;
+    border:1px solid var(--line);
+    padding:9px 16px;
+    border-radius:2px;
+    background:transparent;
+    color:var(--text);
+    cursor:pointer;
+    transition:border-color .2s;
+  }
+  .shop-btn:hover{ border-color:var(--amber-soft); }
+
+  /* ---------- hero ---------- */
+  .hero{
+    padding:110px 32px 100px;
+    position:relative;
+  }
+  .hero-inner{
+    max-width:760px; margin:0 auto;
+    text-align:center;
+  }
+  .eyebrow{
+    font-family:'Heebo', sans-serif;
+    font-size:0.78rem;
+    letter-spacing:0.14em;
+    color:var(--amber-soft);
+    text-transform:uppercase;
+    margin-bottom:24px;
+    display:flex; align-items:center; justify-content:center; gap:10px;
+  }
+  .eyebrow::before, .eyebrow::after{
+    content:""; width:24px; height:1px; background:var(--amber-soft);
+  }
+  .hero h1{
+    font-size:clamp(2.6rem, 6vw, 4.6rem);
+    font-weight:500;
+    line-height:1.06;
+    letter-spacing:-0.01em;
+    margin-bottom:28px;
+  }
+  .hero h1 em{
+    font-style:italic;
+    font-weight:400;
+    color:var(--amber-soft);
+  }
+  .hero p{
+    font-size:1.12rem;
+    line-height:1.65;
+    color:var(--text-dim);
+    max-width:540px;
+    margin:0 auto 40px;
+  }
+
+  /* Primary CTA into the shop */
+  .btn-primary{
+    display:inline-block;
+    background:var(--amber);
+    color:var(--paper);
+    padding:17px 38px;
+    border-radius:2px;
+    font-size:0.98rem;
+    font-weight:600;
+    letter-spacing:0.01em;
+    border:none; cursor:pointer;
+    transition:background .2s, transform .2s;
+  }
+  .btn-primary:hover{ background:var(--amber-soft); transform:translateY(-1px); }
+
+  /* ---------- grading strip ---------- */
+  .strip{
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    overflow:hidden;
+    background:var(--black-soft);
+    /* שורות התיקון למניעת הריצוד: */
+    width: 100%;
+    position: relative;
+  }
+  .strip-track{
+    display:flex; gap:48px;
+    padding:16px 0;
+    white-space:nowrap;
+    animation: marquee 26s linear infinite;
+    width:max-content;
+  }
+  @keyframes marquee{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
+  .strip-track span{
+    font-family:'Heebo', sans-serif;
+    font-size:0.78rem;
+    letter-spacing:0.08em;
+    color:var(--text-dim);
+    text-transform:uppercase;
+  }
+  .strip-track span.acc{ color:var(--amber-soft); }
+
+  /* ---------- process / trust section ---------- */
+  .process{
+    padding:110px 32px;
+  }
+  .process-grid{
+    max-width:1240px; margin:0 auto;
+    display:grid; grid-template-columns:0.9fr 1.1fr; gap:70px; align-items:center;
+  }
+  @media (max-width:880px){ .process-grid{grid-template-columns:1fr; gap:50px;} }
+  .process h2{
+    font-family:'Frank Ruhl Libre', serif;
+    font-size:clamp(1.9rem, 3.4vw, 2.5rem);
+    font-weight:500;
+    line-height:1.2;
+    margin-bottom:22px;
+  }
+  .process h2 em{ font-style:italic; color:var(--amber-soft); font-weight:400; }
+  .process p{
+    color:var(--text-dim);
+    line-height:1.7;
+    font-size:0.98rem;
+    max-width:480px;
+    margin-bottom:16px;
+  }
+  .stat-row{ display:flex; gap:50px; flex-wrap:wrap; margin-top:30px; }
+  .stat .num{ font-family:'Frank Ruhl Libre', serif; font-size:2.4rem; color:var(--amber-soft); }
+  .stat .lbl{ font-family:'Heebo', sans-serif; font-size:0.72rem; color:var(--text-dim); letter-spacing:0.05em; margin-top:4px;}
+
+  /* Grading scale card — the section's signature element */
+  .grade-card{
+    border:1px solid var(--line);
+    background:var(--black-soft);
+    border-radius:3px;
+    padding:8px;
+  }
+  .grade-row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:16px 18px;
+    border-bottom:1px solid var(--line);
+  }
+  .grade-row:last-child{ border-bottom:none; }
+  .grade-name{ font-family:'Frank Ruhl Libre', serif; font-size:1.02rem; }
+  .grade-code{ font-family:'Heebo', sans-serif; font-size:0.78rem; color:var(--text-dim); }
+  .grade-row.accepted .grade-code{ color:var(--olive); }
+  .grade-row.rejected .grade-code{ color:var(--text-dim); text-decoration:line-through; }
+
+  /* ---------- CTA band ---------- */
+  .cta-band{
+    padding:90px 32px;
+    text-align:center;
+    border-top:1px solid var(--line);
+    background:var(--black-soft);
+  }
+  .cta-band h3{
+    font-family:'Frank Ruhl Libre', serif;
+    font-size:clamp(1.8rem, 3.6vw, 2.4rem);
+    font-weight:500;
+    margin-bottom:30px;
+  }
+
+  /* ---------- footer / newsletter ---------- */
+  footer{ padding:70px 32px 40px; }
+  .foot-grid{
+    max-width:1240px; margin:0 auto;
+    display:grid; grid-template-columns:1.4fr 1fr 1fr;
+    gap:50px;
+    padding-bottom:40px; border-bottom:1px solid var(--line);
+  }
+  @media (max-width:760px){ .foot-grid{grid-template-columns:1fr; gap:36px;} }
+  .foot-grid h4{ font-size:0.78rem; letter-spacing:0.06em; color:var(--text-dim); margin-bottom:16px; font-family:'Heebo', sans-serif;}
+  .foot-links{ display:flex; flex-direction:column; gap:10px; font-size:0.9rem; }
+  .foot-links a{ color:var(--text-dim); transition:color .2s; }
+  .foot-links a:hover{ color:var(--text); }
+
+  .newsletter-form{ display:flex; gap:0; max-width:340px; margin-top:6px;}
+  .newsletter-form input{
+    flex:1; background:transparent; border:1px solid var(--line); border-right:none;
+    padding:11px 14px; color:var(--text); font-size:0.86rem; border-radius:2px 0 0 2px;
+    font-family:'Heebo', sans-serif;
+  }
+  .newsletter-form input::placeholder{ color:var(--text-dim); }
+  .newsletter-form button{
+    background:var(--amber); color:var(--paper); border:none; padding:0 18px;
+    font-size:0.8rem; cursor:pointer; border-radius:0 2px 2px 0; font-weight:600;
+  }
+  .newsletter-form button:hover{ background:var(--amber-soft); }
+  .newsletter-note{ font-size:0.76rem; color:var(--text-dim); margin-top:10px; }
+  .newsletter-note.success{ color:var(--olive); }
+
+  .bottom-bar{
+    max-width:1240px; margin:0 auto; padding-top:24px;
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px;
+    font-size:0.78rem; color:var(--text-dim); font-family:'Heebo', sans-serif;
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================
+     HEADER
+     Site logo + nav. "Shop" links to shop.html —
+     the only place a real purchase can be made.
+============================================ -->
+<header>
+  <nav class="nav wrap" style="padding-left:0;padding-right:0;">
+    <a href="index.html" class="logo"><span class="dot"></span>FIND BEST RECORDS</a>
+    <div class="navlinks">
+      <a href="#process">התהליך שלנו</a>
+      <a href="#newsletter">ניוזלטר</a>
+      <a href="shop.html">חנות</a>
+    </div>
+    <a href="shop.html" class="shop-btn">כניסה לחנות ←</a>
+  </nav>
+</header>
+
+<!-- ============================================
+     HERO
+     Headline + intro + primary CTA into the shop.
+============================================ -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">תקליטים יד שנייה, במהדורות מוגבלות</div>
+    <h1>כל תקליט מרוויח<br>את מקומו <em>באוסף שלכם.</em></h1>
+    <p>אנחנו לא מציעים למכירה שום דבר מתחת לדירוג VG+. כל תקליט עובר בדיקה חזותית, האזנה מלאה מקצה לקצה, ומדורג כמו שאספן מדרג — לא כמו שמחסן מדרג.</p>
+    <a href="shop.html" class="btn-primary">לצפייה בקטלוג</a>
+  </div>
+</section>
+
+<div class="strip">
+  <div class="strip-track" id="stripTrack"></div>
+</div>
+
+<!-- ============================================
+     PROCESS SECTION
+     Explains the grading standard and builds trust
+     before sending people to the shop.
+============================================ -->
+<section class="process" id="process">
+  <div class="process-grid">
+    <div>
+      <h2>מדורגים כמו שאספן <em>אמיתי</em> מדרג.</h2>
+      <p>כל תקליט עובר בדיקה חזותית מלאה והאזנה מקצה לקצה לפני שהוא עולה למכירה. אנחנו מציינים רעשי משטח, בלאי בעטיפה וכל חוסר מילוי — כדי שמה שאתם רואים ברישום הוא בדיוק מה שינגן אצלכם.</p>
+      <p>כל מה שלא עומד בדירוג VG+ לא עולה למכירה. פשוט כזה.</p>
+      <div class="stat-row">
+        <div class="stat"><div class="num">1,400+</div><div class="lbl">תקליטים דורגו השנה</div></div>
+        <div class="stat"><div class="num">VG+</div><div class="lbl">דירוג מינימלי למכירה</div></div>
+        <div class="stat"><div class="num">48 שעות</div><div class="lbl">זמן משלוח ממוצע</div></div>
+      </div>
+    </div>
+    <div class="grade-card">
+      <div class="grade-row accepted">
+        <span class="grade-name">כמעט חדש (NM)</span>
+        <span class="grade-code">במכירה</span>
+      </div>
+      <div class="grade-row accepted">
+        <span class="grade-name">טוב מאוד פלוס (VG+)</span>
+        <span class="grade-code">במכירה</span>
+      </div>
+      <div class="grade-row rejected">
+        <span class="grade-name">טוב מאוד (VG)</span>
+        <span class="grade-code">לא במכירה</span>
+      </div>
+      <div class="grade-row rejected">
+        <span class="grade-name">טוב / סביר / גרוע</span>
+        <span class="grade-code">לא במכירה</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     CTA BAND
+     Secondary, high-visibility push to the shop
+     for anyone who scrolled this far.
+============================================ -->
+<section class="cta-band">
+  <h3>שישה עשר תקליטים במלאי השבוע.</h3>
+  <a href="shop.html" class="btn-primary">כניסה לחנות ←</a>
+</section>
+
+<!-- ============================================
+     FOOTER + NEWSLETTER
+     Newsletter form is front-end only — see the
+     JS comment below for what a real backend needs.
+============================================ -->
+<footer>
+  <div class="foot-grid">
+    <div id="newsletter">
+      <a href="index.html" class="logo" style="margin-bottom:14px;"><span class="dot"></span>FIND BEST RECORDS</a>
+      <p style="color:var(--text-dim); font-size:0.88rem; max-width:300px; line-height:1.6; margin-bottom:20px;">קבלו עדכון כשמגיעות הפקות חדשות — בדרך כלל פעם בשבוע, לא יותר.</p>
+      <form class="newsletter-form" id="newsletterForm">
+        <input type="email" id="newsletterEmail" placeholder="you@email.com" aria-label="כתובת אימייל" required>
+        <button type="submit">הרשמה</button>
+      </form>
+      <div class="newsletter-note" id="newsletterNote">בלי ספאם. אפשר לבטל בכל עת.</div>
+    </div>
+    <div>
+      <h4>חנות</h4>
+      <div class="foot-links">
+        <a href="shop.html">הגעות חדשות</a>
+        <a href="shop.html">כל הז'אנרים</a>
+        <a href="#process">מדריך דירוג</a>
+      </div>
+    </div>
+    <div>
+      <h4>תמיכה</h4>
+      <div class="foot-links">
+        <a href="#">משלוחים והחזרות</a>
+        <a href="#">מעקב אחר הזמנה</a>
+        <a href="#">צור קשר</a>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-bar" style="flex-direction:column; align-items:flex-start; gap:6px;">
+    <div style="display:flex; justify-content:space-between; width:100%; flex-wrap:wrap; gap:14px;">
+      <span>© 2026 FIND BEST RECORDS</span>
+      <span>קיימים במהדורות מוגבלות, נשלחים בקפידה</span>
+    </div>
+    <span>תקליטים שנבחרו במיוחד בשבילכם</span>
+  </div>
+</footer>
+
+<script>
+  // Scrolling strip of grading/brand claims — purely decorative,
+  // duplicated once so the marquee loop is seamless.
+  function renderStrip(){
+    const words = ['הגעות חדשות בימי שישי', 'דירוג ידני', 'דירוג מינימלי VG+', 'משלוח באריזה קשיחה', 'הפקות במהדורות מוגבלות', 'בלי סחורת מילוי זולה'];
+    const html = words.map((w,i)=>`<span class="${i%2===0?'acc':''}">${w}</span>`).join('');
+    document.getElementById('stripTrack').innerHTML = html + html;
+  }
+  renderStrip();
+
+  // ------------------------------------------------------------
+  // NEWSLETTER FORM — front-end only for now.
+  //
+  // To make this actually collect emails, replace the code inside
+  // the submit handler with a real request to your provider, e.g.:
+  //
+  //   await fetch('https://your-backend.com/api/subscribe', {
+  //     method: 'POST',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify({ email })
+  //   });
+  //
+  // or call your email platform's API directly (Mailchimp, Klaviyo,
+  // ConvertKit, etc. all have a "subscribe" endpoint for this).
+  // ------------------------------------------------------------
+  document.getElementById('newsletterForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const email = document.getElementById('newsletterEmail').value.trim();
+    const note = document.getElementById('newsletterNote');
+    if(!email){ return; }
+
+    // Placeholder behavior — swap for a real API call (see comment above).
+    console.log('[newsletter] would subscribe:', email);
+    note.textContent = "נרשמתם בהצלחה — תודה שהצטרפתם.";
+    note.classList.add('success');
+    document.getElementById('newsletterEmail').value = '';
+  });
+</script>
+
+</body>
+</html>
